@@ -1,3 +1,15 @@
+/* Pixelify Sans draws its 5 like an S and its 2 like a Z, so every number on the page takes
+   its digits from Jersey 10 (SIL OFL, assets/fonts/Jersey10-OFL.txt), cut down to the ten
+   digits. Only the digits: the letters stay Pixelify Sans. Scaled to Pixelify's cap height. */
+@font-face {
+  font-family: "BRS Digits";
+  src: url("assets/fonts/jersey10-digits.woff2") format("woff2");
+  unicode-range: U+0030-0039;
+  font-weight: 100 900;
+  font-display: swap;
+  size-adjust: 135%;
+}
+
 /* Palette sampled from the game: lagoon water, logo outline, logo gold and its shades */
 :root {
   color-scheme: light;
@@ -14,7 +26,7 @@
   --text: #2d2832;
   --text-soft: #5b5263;
   --px: 4px; /* one art pixel at the page's chunky scale */
-  --heading: "Pixelify Sans", ui-monospace, monospace;
+  --heading: "BRS Digits", "Pixelify Sans", ui-monospace, monospace;
   --body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   /* The game's own pointer, handed to the browser like the game hands it to the OS:
      hardware cursor, so it never lags. Tip is (2,2) in the art, doubled. */
@@ -24,7 +36,12 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; cursor: var(--hand); }
+html {
+  scroll-behavior: smooth; cursor: var(--hand);
+  scrollbar-gutter: stable; /* the shop locks the scroll without the page jumping sideways */
+  /* fast taps break things; they must never be read as a double-tap zoom */
+  touch-action: manipulation;
+}
 html.bending { cursor: var(--hand-bending); }
 html.pressed { cursor: var(--hand-pressed); }
 a, button, summary { cursor: inherit; }
@@ -37,6 +54,9 @@ body {
   overflow-x: hidden;
 }
 img, video { display: block; max-width: 100%; height: auto; }
+/* The page shakes as one piece when something breaks. Kept on its own layer so a shake only
+   moves the layer, rather than repainting the whole page every frame of it. */
+main { will-change: transform; }
 a { color: inherit; }
 
 /* ---------- top bar ---------- */
@@ -51,42 +71,128 @@ a { color: inherit; }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font: 700 20px var(--heading); }
 .brand img { image-rendering: pixelated; }
 .purse {
+  position: relative;
   display: flex; align-items: center; gap: 8px;
   margin-left: auto;
-  padding: 2px 12px 2px 6px;
+  padding: 2px 4px 2px 6px;
   background: #1d1a21;
   border: 3px solid #4a4252;
   font: 700 20px var(--heading); color: var(--gold);
   min-width: 84px;
 }
+.purse:hover, .purse:focus-visible { border-color: var(--gold); }
+.shop-tag {
+  margin-left: 4px; padding: 0 8px;
+  font: 700 15px/26px var(--heading); color: var(--ink);
+  background: var(--gold);
+  box-shadow: inset 0 -3px 0 var(--gold-shade);
+}
+.purse.can-buy .shop-tag { animation: tag-nudge 1.4s steps(2, end) infinite; }
+/* the red sticker on anything just come within reach */
+.new-badge, .new-dot, .card .new {
+  position: absolute; z-index: 2;
+  padding: 0 5px;
+  font: 700 12px/18px var(--heading); color: var(--white); letter-spacing: .04em;
+  white-space: nowrap;
+  background: #f05a5a;
+  border: 2px solid var(--ink);
+  box-shadow: 0 2px 0 var(--ink);
+  pointer-events: none;
+  animation: new-bob 1s steps(2, end) infinite;
+}
+.new-badge { top: -11px; right: -10px; }
+.new-dot { top: -12px; right: -10px; }
+.card .new { left: 8px; top: 8px; font-size: 14px; line-height: 20px; }
+.new-badge[hidden], .new-dot[hidden], .card .new[hidden] { display: none; }
+@keyframes new-bob { 50% { transform: translateY(-3px); } }
+@keyframes tag-nudge { 50% { transform: translateY(-3px); } }
 .purse img { image-rendering: pixelated; }
-.purse.pop { animation: purse-pop .18s steps(3) 1; }
-@keyframes purse-pop { 40% { transform: scale(1.18); } }
 .topbar nav { display: flex; gap: 20px; font: 500 18px var(--heading); }
 .topbar nav a { text-decoration: none; opacity: .85; }
 .topbar nav a:hover { opacity: 1; color: var(--gold); }
 
-/* ---------- hero ---------- */
+/* ---------- hero: the lagoon ---------- */
 .hero {
+  --tile: url("assets/water.png");
+  --sea: var(--water);
   position: relative;
-  background: var(--water) url("assets/water.png") repeat;
-  background-size: 256px 160px; /* 4x the 64x40 tile */
-  image-rendering: pixelated;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--sea);
   color: var(--white);
   padding: 72px 16px 120px;
   text-align: center;
 }
-.hero-inner { max-width: 820px; margin: 0 auto; }
-.logo-wrap { width: fit-content; margin: 0 auto 28px; }
-.logo {
-  width: 610px; /* exact 5x so every art pixel stays square */
+/* The water drifts: the tile slides one whole tile and starts over, in steps of one art
+   pixel, so it moves without ever blurring. A transform, so it costs the page nothing. */
+.hero::before {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 0; z-index: -1;
+  width: calc(100% + 256px);
+  background: var(--tile) 0 0 / 256px 160px repeat; /* 4x the 64x40 tile */
   image-rendering: pixelated;
-  filter: drop-shadow(0 12px 0 rgba(29, 26, 33, .25));
-  animation: bob 2.4s steps(4, end) infinite;
+  animation: tide 16s steps(64) infinite;
+  will-change: transform;
 }
+@keyframes tide { to { transform: translate3d(-256px, 0, 0); } }
+.hero[data-lagoon="turquoise"] { --tile: url("assets/water_turquoise.png"); --sea: #20b2a6; }
+.hero[data-lagoon="sunset"] { --tile: url("assets/water_sunset.png"); --sea: #ec7a68; }
+.hero[data-lagoon="night"] { --tile: url("assets/water_night.png"); --sea: #1e2a5c; }
+
+/* gulls and glints, moved by the page's one loop */
+.lagoon { position: absolute; inset: 0; pointer-events: none; }
+.lagoon > * { position: absolute; left: 0; top: 0; will-change: transform; }
+.gull {
+  width: 28px; height: 12px;
+  background: url("assets/sprites/gull.png") 0 0 / 56px 12px no-repeat;
+  image-rendering: pixelated;
+  opacity: .9;
+}
+.glint { height: 4px; background: #fff; opacity: .7; }
+.hero[data-lagoon="night"] .glint { background: #dfe8ff; opacity: .9; box-shadow: 0 0 0 2px rgba(150, 180, 255, .25); }
+.hero[data-lagoon="sunset"] .glint { background: #fff3c4; }
+
+.hero-inner { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; }
+
+/* The title as the game's own title screen shows it: the name, and the game's hand pressing
+   it from below, every 1.7 seconds. Three sheets on one grid, scaled up whole: --lp is one
+   art pixel. The hand hangs 13 art pixels under the name, so the space under it is kept. */
+.logo-wrap {
+  --lp: 5px;
+  width: calc(123 * var(--lp));
+  margin: 0 auto calc(13 * var(--lp) + 8px);
+}
+.logo-wrap img {
+  width: calc(123 * var(--lp)); max-width: none;
+  image-rendering: pixelated;
+}
+.logo, .presser { animation: bob 2.4s step-end infinite, knock 1.7s step-end infinite; }
+.presser { position: absolute; left: 0; top: 0; width: 100%; }
+.presser img { position: absolute; left: 0; top: 0; }
+.title-hand { animation: tap 1.7s step-end infinite; }
+.title-click { opacity: 0; animation: strokes 1.7s step-end infinite; }
 @keyframes bob {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  25%, 75% { transform: translateY(calc(-1 * var(--lp))); }
+  50% { transform: translateY(calc(-2 * var(--lp))); }
+}
+/* down in 0.08 s, held 0.12 s, back up in 0.25 s, from one art pixel right and two below */
+@keyframes tap {
+  0%, 21%, 100% { transform: translate(var(--lp), calc(2 * var(--lp))); }
+  2.4% { transform: translate(var(--lp), var(--lp)); }
+  4.7%, 11.8% { transform: translate(0, 0); }
+  14% { transform: translate(0, var(--lp)); }
+  17% { transform: translate(var(--lp), var(--lp)); }
+}
+@keyframes strokes {
+  0%, 17.6%, 100% { opacity: 0; }
+  4.7% { opacity: 1; }
+  9% { opacity: .66; }
+  13% { opacity: .33; }
+}
+/* the press knocks the name up one art pixel */
+@keyframes knock {
+  0%, 9%, 100% { translate: 0 0; }
+  4.7% { translate: 0 calc(-1 * var(--lp)); }
 }
 .tagline {
   max-width: 640px; margin: 0 auto 32px;
@@ -253,11 +359,12 @@ a { color: inherit; }
 }
 .faq details[open] summary::before { transform: rotate(45deg); }
 .faq summary:hover { color: var(--gold-shade); }
-.faq details p { width: fit-content; margin: 0; padding: 0 18px 16px 48px; color: var(--text-soft); }
+.faq details p { width: fit-content; margin: 0; padding: 0 18px 16px 48px; color: var(--text-soft); overflow-wrap: anywhere; }
 
 /* ---------- press kit ---------- */
 .press { max-width: 1120px; margin: 0 auto; padding: 8px 24px 64px; }
 .press-inner { display: flex; gap: 24px; align-items: stretch; flex-wrap: wrap; }
+.press-inner > * { min-width: 0; }
 .facts {
   flex: 1 1 420px;
   display: grid; grid-template-columns: max-content 1fr; gap: 8px 20px;
@@ -267,7 +374,7 @@ a { color: inherit; }
   box-shadow: 0 var(--px) 0 var(--ink);
 }
 .facts dt { font: 700 17px var(--heading); color: var(--text-soft); }
-.facts dd { margin: 0; font: 500 18px var(--heading); color: var(--ink); }
+.facts dd { margin: 0; font: 500 18px var(--heading); color: var(--ink); overflow-wrap: anywhere; }
 .press-side { flex: 1 1 260px; display: flex; flex-direction: column; justify-content: center; gap: 16px; }
 .press-side p { width: fit-content; margin: 0; color: var(--text-soft); }
 .press-side .btn { align-self: flex-start; }
@@ -380,16 +487,157 @@ a { color: inherit; }
   image-rendering: pixelated;
   pointer-events: none;
   display: none;
+  will-change: transform;
 }
-.fx { position: fixed; inset: 0; z-index: 900; pointer-events: none; overflow: hidden; }
-.fx > * { position: absolute; left: 0; top: 0; will-change: transform; }
-.chip { width: 8px; height: 8px; }
-.coin { width: 32px; height: 32px; image-rendering: pixelated; }
-.word { white-space: pre; }
-.piece { image-rendering: pixelated; }
-.plus {
+/* every chip, piece, coin and number flying about is drawn on this one canvas */
+.fx {
+  position: fixed; left: 0; top: 0; z-index: 900;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+
+/* ---------- friends walking the bottom edge of the screen ---------- */
+.walkers { position: fixed; left: 0; right: 0; bottom: 2px; height: 0; z-index: 700; pointer-events: none; }
+.pet {
+  position: absolute; left: 0; bottom: 0;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  will-change: transform;
+  pointer-events: auto;
+  cursor: inherit;
+}
+
+/* ---------- shop ---------- */
+.shop {
+  position: fixed; inset: 0; z-index: 800;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  background: rgba(29, 26, 33, .82);
+}
+.shop[hidden] { display: none; }
+html.shop-open { overflow: hidden; }
+.shop-panel {
+  display: flex; flex-direction: column;
+  width: min(940px, 100%);
+  /* one height for every tab, so switching tabs never makes the panel jump */
+  height: min(800px, calc(100vh - 32px));
+  height: min(800px, calc(100dvh - 32px));
+  background: var(--paper);
+  border: var(--px) solid var(--ink);
+  box-shadow: 0 8px 0 #1d1a21;
+  animation: shop-in .24s steps(4) both;
+}
+.shop-panel.shake { animation: shop-shake .2s steps(4) 1; }
+@keyframes shop-in { from { transform: translateY(48px) scale(.94); opacity: 0; } }
+@keyframes shop-shake {
+  25% { transform: translate(-6px, 3px); }
+  50% { transform: translate(5px, -3px); }
+  75% { transform: translate(-3px, 2px); }
+}
+.shop-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px 12px 20px;
+  background: var(--ink); color: var(--white);
+}
+.shop-head h2 { margin: 0; font: 700 30px/1 var(--heading); color: var(--gold); }
+.shop-balance {
+  display: flex; align-items: center; gap: 8px;
+  margin-left: auto;
+  padding: 2px 14px 2px 6px;
+  background: #1d1a21; border: 3px solid #4a4252;
   font: 700 22px var(--heading); color: var(--gold);
-  text-shadow: 2px 0 var(--ink), -2px 0 var(--ink), 0 2px var(--ink), 0 -2px var(--ink);
+}
+.shop-balance img { image-rendering: pixelated; }
+.shop-close {
+  flex: none; width: 44px; height: 44px; padding: 0;
+  font: 700 28px/1 var(--heading); color: var(--ink);
+  background: var(--gold); border: 3px solid #1d1a21;
+  box-shadow: inset 0 -4px 0 var(--gold-shade);
+}
+.shop-close:hover { transform: translateY(-2px); }
+.shop-blurb { margin: 14px 20px 0; color: var(--text-soft); font-size: 15px; }
+.shop-tabs { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 20px 0; }
+.shop-tab {
+  position: relative;
+  padding: 8px 14px 6px;
+  font: 700 18px var(--heading); color: var(--ink);
+  background: var(--white);
+  border: 3px solid var(--ink);
+  box-shadow: 0 3px 0 var(--ink);
+}
+.shop-tab:hover { transform: translateY(-2px); }
+.shop-tab[aria-selected="true"] { background: var(--gold); box-shadow: inset 0 -3px 0 var(--gold-shade), 0 3px 0 var(--ink); }
+.shop-tab small { margin-left: 6px; font-size: 14px; color: var(--text-soft); }
+.shop-grid {
+  flex: 1; align-content: start;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); gap: 16px;
+  padding: 18px 20px 22px;
+  overflow-y: auto; overscroll-behavior: contain;
+}
+.card {
+  position: relative;
+  display: flex; flex-direction: column;
+  background: var(--white);
+  border: var(--px) solid var(--ink);
+  box-shadow: 0 var(--px) 0 var(--ink);
+}
+.card.equipped { box-shadow: 0 0 0 var(--px) var(--gold), 0 8px 0 var(--ink); }
+.card.flash { animation: card-flash .3s steps(3) 1; }
+@keyframes card-flash { 0%, 66% { filter: brightness(1.6); transform: translateY(-6px); } }
+.pv {
+  position: relative; height: 112px;
+  display: grid; place-items: center;
+  overflow: hidden;
+  background: #dcecff;
+  border-bottom: 3px solid var(--ink);
+}
+.pv > i { display: block; image-rendering: pixelated; background-repeat: no-repeat; }
+.pv-tool { width: 132px; height: 72px; background-size: 1056px 72px; }
+.card:hover .pv-tool { animation: pv-swing .25s steps(8) infinite; }
+@keyframes pv-swing { to { background-position: -1056px 0; } }
+.pv > .pv-lagoon { position: absolute; inset: 0; background: 0 0 / 256px 160px repeat; }
+.pv > .gull { position: relative; }
+.pv-sand { position: absolute; left: 0; right: 0; bottom: 0; height: 18px; background: var(--paper); border-top: 3px solid #eadfc8; }
+.pv > .pet-pv { position: absolute; bottom: 12px; left: 50%; }
+.pv-rainbow { display: flex; gap: 6px; }
+.pv-rainbow b { width: 14px; height: 14px; animation: hop .6s steps(2, end) infinite; }
+.pv-rainbow b:nth-child(2n) { animation-delay: -.3s; }
+@keyframes hop { 50% { transform: translateY(-10px); } }
+.pv > .pv-trail { display: block; }
+.pv.dark { background: #2d2832; }
+.pv-flock { display: flex; gap: 14px; align-items: center; }
+.pv-flock .gull:nth-child(2) { margin-top: -26px; }
+.card h3 { margin: 12px 14px 2px; font: 700 20px/1.15 var(--heading); color: var(--ink); }
+.card p { flex: 1; margin: 0 14px 12px; font-size: 14px; line-height: 1.4; color: var(--text-soft); }
+.buy {
+  --face: var(--gold); --edge: var(--gold-shade);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  margin: 0 14px 14px; padding: 8px 10px 6px;
+  font: 700 18px var(--heading); color: var(--ink);
+  background: var(--face);
+  border: 3px solid var(--ink);
+  box-shadow: inset 0 -4px 0 var(--edge), 0 3px 0 var(--ink);
+}
+.buy img { width: 24px; height: 24px; image-rendering: pixelated; }
+.buy:hover { transform: translateY(-2px); }
+.buy:active { transform: translateY(2px); box-shadow: inset 0 -4px 0 var(--edge), 0 1px 0 var(--ink); }
+.buy.affordable { animation: breathe 1.6s steps(2, end) infinite; }
+.buy.short { --face: #e9e4ee; --edge: #c9c2d1; color: var(--text-soft); }
+.buy.owned { --face: var(--white); --edge: #c9c2d1; }
+.buy.on { --face: var(--grass); --edge: var(--grass-dark); color: var(--white); text-shadow: 0 2px 0 var(--grass-dark); }
+.buy[disabled] { --face: #f1ecf4; --edge: #d8d1de; color: var(--text-soft); transform: none; }
+.buy.nope { animation: nope .3s steps(6) 1; --face: #f05a5a; --edge: #b33a3a; color: var(--white); }
+@keyframes nope {
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+.tag {
+  position: absolute; right: 8px; top: 8px; z-index: 1;
+  padding: 0 6px;
+  font: 700 13px/22px var(--heading); color: var(--white);
+  background: var(--ink);
 }
 
 /* ---------- smaller screens ---------- */
@@ -399,7 +647,7 @@ a { color: inherit; }
   .shots { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 700px) {
-  .logo { width: 366px; } /* 3x */
+  .logo-wrap { --lp: 3px; }
   .perks { grid-template-columns: 1fr; }
   .studio-inner { flex-direction: column; padding: 24px; }
   .studio-icon img { width: 96px; height: 96px; }
@@ -407,9 +655,24 @@ a { color: inherit; }
 }
 @media (max-width: 520px) {
   .topbar nav { display: none; }
+  .facts { grid-template-columns: 1fr; gap: 0; padding: 16px 18px; }
+  .facts dd { margin-bottom: 10px; }
+  .facts dd:last-child { margin-bottom: 0; }
+  .shop { padding: 8px; }
+  .shop-panel { height: calc(100vh - 16px); height: calc(100dvh - 16px); }
+  .shop-head { padding: 10px 10px 10px 14px; gap: 8px; }
+  .shop-head h2 { font-size: 24px; }
+  .shop-blurb { margin: 10px 14px 0; }
+  .shop-tabs { padding: 10px 14px 0; gap: 6px; }
+  .shop-tab { padding: 6px 10px 4px; font-size: 16px; }
+  .shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 12px 14px 16px; }
+  .card h3 { margin: 10px 10px 2px; font-size: 17px; }
+  .card p { margin: 0 10px 10px; font-size: 13px; }
+  .buy { margin: 0 10px 10px; font-size: 16px; }
+  .pv { height: 96px; }
 }
 @media (max-width: 420px) {
-  .logo { width: 244px; } /* 2x */
+  .logo-wrap { --lp: 2px; }
   .topbar { padding: 10px 16px; }
   .brand span { display: none; }
   .hero { padding: 48px 16px 104px; }
@@ -418,6 +681,7 @@ a { color: inherit; }
   .shots { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .logo, .btn-gold, .hint { animation: none; }
+  .logo, .presser, .title-hand, .title-click, .btn-gold, .hint, .hero::before,
+  .buy.affordable, .purse.can-buy .shop-tag, .pv-rainbow b, .new-badge, .new-dot, .card .new { animation: none; }
   html { scroll-behavior: auto; }
 }

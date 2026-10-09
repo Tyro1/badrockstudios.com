@@ -14,7 +14,9 @@
   <meta property="og:url" content="https://badrockstudios.com/">
   <meta property="og:title" content="Clicker, Clicks Something · Bad Rock Studio">
   <meta property="og:description" content="An idle clicker about one very busy cursor. Coming to Steam.">
-  <meta property="og:image" content="https://badrockstudios.com/assets/og-logo.png">
+  <meta property="og:image" content="https://badrockstudios.com/assets/og-capsule.png">
+  <meta property="og:image:width" content="1232">
+  <meta property="og:image:height" content="706">
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,10 +31,12 @@
     <img src="assets/favicon-32.png" width="32" height="32" alt="" draggable="false">
     <span>Bad Rock Studio</span>
   </a>
-  <div class="purse" title="Gold you've knocked loose on this site">
+  <button class="purse" type="button" aria-haspopup="dialog" aria-controls="shop" title="Gold you've knocked loose on this site. Spend it in the shop.">
     <img src="assets/sprites/gold.png" width="32" height="32" alt="" draggable="false">
     <span id="gold" aria-live="polite">0</span>
-  </div>
+    <span class="shop-tag">Shop</span>
+    <span class="new-badge" hidden>NEW</span>
+  </button>
   <nav>
     <a href="#game">Game</a>
     <a href="#gallery">Gallery</a>
@@ -44,10 +48,15 @@
 
 <main id="top">
 
-  <section class="hero">
+  <section class="hero" data-lagoon="night">
+    <div class="lagoon" aria-hidden="true"></div>
     <div class="hero-inner">
       <h1 class="logo-wrap" data-break>
-        <img class="logo" src="assets/logo.png" width="122" height="38" alt="Clicker, Clicks Something" draggable="false">
+        <img class="logo" src="assets/title/logo.png" width="123" height="36" alt="Clicker, Clicks Something" draggable="false">
+        <span class="presser" aria-hidden="true">
+          <img class="title-hand" src="assets/title/hand.png" width="123" height="49" alt="" draggable="false">
+          <img class="title-click" src="assets/title/click.png" width="123" height="49" alt="" draggable="false">
+        </span>
       </h1>
       <p class="tagline" data-break>An idle clicker about one very busy cursor. Click trees and rocks, build huts, hand every chore to your hungry villagers, buy and explore island after island and help the locals, while monsters and their creeping corruption try to take it all back.</p>
       <div class="cta">
@@ -104,15 +113,15 @@
   <section id="gallery" class="gallery">
     <h2 data-break>Gallery</h2>
     <div class="shots">
-      <div class="shot" data-break><img src="assets/shots/village.png" loading="lazy" width="1920" height="1080" alt="A busy village island with huts, villagers and a statue" draggable="false"><button class="zoom" data-full="assets/shots/village.png" aria-label="Enlarge screenshot"></button></div>
+      <div class="shot" data-break><img src="assets/shots/village.png" loading="lazy" width="1920" height="1080" alt="A busy village island in full daylight, villagers at work between the huts" draggable="false"><button class="zoom" data-full="assets/shots/village.png" aria-label="Enlarge screenshot"></button></div>
       <div class="shot" data-break><img src="assets/shots/rain.png" loading="lazy" width="1920" height="1080" alt="Villagers working through a rainy night" draggable="false"><button class="zoom" data-full="assets/shots/rain.png" aria-label="Enlarge screenshot"></button></div>
       <div class="shot" data-break><img src="assets/shots/pickaxe.png" loading="lazy" width="1920" height="1080" alt="Forging a diamond pickaxe" draggable="false"><button class="zoom" data-full="assets/shots/pickaxe.png" aria-label="Enlarge screenshot"></button></div>
       <div class="shot" data-break><img src="assets/shots/desert.png" loading="lazy" width="1920" height="1080" alt="A desert island full of cacti and ore" draggable="false"><button class="zoom" data-full="assets/shots/desert.png" aria-label="Enlarge screenshot"></button></div>
-      <div class="shot" data-break><img src="assets/shots/map.png" loading="lazy" width="1920" height="1080" alt="The island map with land to buy" draggable="false"><button class="zoom" data-full="assets/shots/map.png" aria-label="Enlarge screenshot"></button></div>
+      <div class="shot" data-break><img src="assets/shots/map.png" loading="lazy" width="1920" height="1080" alt="The island map, with land for sale around the first three islands" draggable="false"><button class="zoom" data-full="assets/shots/map.png" aria-label="Enlarge screenshot"></button></div>
       <div class="shot" data-break><img src="assets/shots/snow.png" loading="lazy" width="1920" height="1080" alt="A snowy island" draggable="false"><button class="zoom" data-full="assets/shots/snow.png" aria-label="Enlarge screenshot"></button></div>
-      <div class="shot" data-break><img src="assets/shots/swamp.png" loading="lazy" width="1920" height="1080" alt="Purple corruption spreading over a swamp island" draggable="false"><button class="zoom" data-full="assets/shots/swamp.png" aria-label="Enlarge screenshot"></button></div>
-      <div class="shot" data-break><img src="assets/shots/skills.png" loading="lazy" width="1920" height="1080" alt="The skill tree" draggable="false"><button class="zoom" data-full="assets/shots/skills.png" aria-label="Enlarge screenshot"></button></div>
-      <div class="shot" data-break><img src="assets/shots/keepsakes.png" loading="lazy" width="1920" height="1080" alt="The journal's keepsakes page" draggable="false"><button class="zoom" data-full="assets/shots/keepsakes.png" aria-label="Enlarge screenshot"></button></div>
+      <div class="shot" data-break><img src="assets/shots/swamp.png" loading="lazy" width="1920" height="1080" alt="Settlers at work on a swamp island while the purple corruption spreads" draggable="false"><button class="zoom" data-full="assets/shots/swamp.png" aria-label="Enlarge screenshot"></button></div>
+      <div class="shot" data-break><img src="assets/shots/skills.png" loading="lazy" width="1920" height="1080" alt="The whole skill tree, a few branches in" draggable="false"><button class="zoom" data-full="assets/shots/skills.png" aria-label="Enlarge screenshot"></button></div>
+      <div class="shot" data-break><img src="assets/shots/keepsakes.png" loading="lazy" width="1920" height="1080" alt="The journal's keepsakes page, three lost things returned" draggable="false"><button class="zoom" data-full="assets/shots/keepsakes.png" aria-label="Enlarge screenshot"></button></div>
     </div>
   </section>
 
@@ -159,7 +168,7 @@
         <dt>Press contact</dt><dd>contact@badrockstudios.com</dd>
       </dl>
       <div class="press-side">
-        <p data-break>Logo, app icon, screenshots and store copy in one zip.</p>
+        <p data-break>Logo, app icon, key art, screenshots and store copy in one zip.</p>
         <a class="btn btn-gold" href="assets/presskit.zip" download>Download press kit</a>
       </div>
     </div>
@@ -198,9 +207,23 @@
   <button class="close" aria-label="Close">×</button>
 </dialog>
 
+<div class="shop" id="shop" role="dialog" aria-modal="true" aria-labelledby="shop-title" hidden>
+  <div class="shop-panel">
+    <header class="shop-head">
+      <h2 id="shop-title">Shop</h2>
+      <div class="shop-balance"><img src="assets/sprites/gold.png" width="32" height="32" alt=""><span id="shop-gold">0</span></div>
+      <button class="shop-close" type="button" aria-label="Close the shop">×</button>
+    </header>
+    <p class="shop-blurb">Everything here is for looks. Break things on the page for gold, then spend it.</p>
+    <div class="shop-tabs" role="tablist"></div>
+    <div class="shop-grid" role="tabpanel"></div>
+  </div>
+</div>
+
+<div class="walkers" aria-hidden="true"></div>
 <div class="toasts" aria-live="polite"></div>
 <div class="tool" aria-hidden="true"></div>
-<div class="fx" aria-hidden="true"></div>
+<canvas class="fx" aria-hidden="true"></canvas>
 
 <script src="main.js" defer></script>
 </body>

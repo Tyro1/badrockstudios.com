@@ -54,19 +54,34 @@ filtering only, so the pixels stay sharp.
 """
 
 
+# The approved logo (2026-10-08, N1) with its shadow, as the game's title screen draws it, and
+# the Steam pictures made from the capsule art with the game's pointer pressing the name.
+LOGO = GAME / "Art" / "Sprites" / "Used" / "Sheets" / "Title" / "title_logo.png"
+CAPSULES = GAME.parent.parent / "Steam" / "Capsules"
+CAPSULE_FILES = ["main_capsule_1232x706.png", "header_capsule_920x430.png",
+                 "library_hero_3840x1240.png"]
+
+
 def main():
     WORK.mkdir(parents=True, exist_ok=True)
-    logo = Image.open(GAME / "Samples" / "Store" / "Logo" / "J4_ortak_yay_1x.png").convert("RGBA")
+    for old in WORK.glob("*.png"):
+        old.unlink()
+    logo = Image.open(LOGO).convert("RGBA")
     logo_big = logo.resize((logo.width * 8, logo.height * 8), Image.NEAREST)
     logo_big.save(WORK / "logo_8x_transparent.png")
+    with_pointer = next(CAPSULES.glob("library_logo_*.png"))
 
+    root = "Clicker Clicks Something - press kit"
     with zipfile.ZipFile(OUT, "w", zipfile.ZIP_DEFLATED) as z:
-        z.writestr("Clicker Clicks Something - press kit/fact_sheet.txt", FACTS)
-        z.write(WORK / "logo_8x_transparent.png", "Clicker Clicks Something - press kit/logo/logo_8x_transparent.png")
-        z.write(GAME / "Samples" / "Store" / "Logo" / "J4_ortak_yay_1x.png", "Clicker Clicks Something - press kit/logo/logo_1x_transparent.png")
-        z.write(GAME / "Art" / "Icons" / "App" / "app_icon_1024.png", "Clicker Clicks Something - press kit/logo/app_icon_1024.png")
+        z.writestr(f"{root}/fact_sheet.txt", FACTS)
+        z.write(WORK / "logo_8x_transparent.png", f"{root}/logo/logo_8x_transparent.png")
+        z.write(LOGO, f"{root}/logo/logo_1x_transparent.png")
+        z.write(with_pointer, f"{root}/logo/logo_with_pointer_transparent.png")
+        z.write(GAME / "Art" / "Icons" / "App" / "app_icon_1024.png", f"{root}/logo/app_icon_1024.png")
+        for name in CAPSULE_FILES:
+            z.write(CAPSULES / name, f"{root}/key_art/{name}")
         for shot in sorted((SITE / "assets" / "shots").glob("*.png")):
-            z.write(shot, f"Clicker Clicks Something - press kit/screenshots/{shot.name}")
+            z.write(shot, f"{root}/screenshots/{shot.name}")
     print(OUT, OUT.stat().st_size // 1024, "KB")
 
 
