@@ -14,11 +14,12 @@ WORK = SITE / "tools" / "_presskit"
 FACTS = """Clicker, Clicks Something
 by Bad Rock Studio (Istanbul)
 
-Release: Early Access on Steam, November 2026
+Release: November 2026, on Steam
 Platform: Windows PC (Steam)
 Interface languages: English, German, French, Spanish, Brazilian Portuguese, Russian,
-Turkish, Japanese, Korean, Simplified Chinese (Thai on the way)
+Turkish, Japanese, Korean, Simplified Chinese, Thai
 Contact: contact@badrockstudios.com
+Steam: https://store.steampowered.com/app/5304720/Clicker_Clicks_Something/
 Website: https://badrockstudios.com
 Steam group: https://steamcommunity.com/groups/badrockstudio
 
