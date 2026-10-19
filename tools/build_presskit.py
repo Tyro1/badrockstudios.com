@@ -4,14 +4,12 @@ for press and creators. Run after the screenshots or the logo change:
 """
 import zipfile
 from pathlib import Path
-from PIL import Image
 
 SITE = Path(__file__).resolve().parent.parent
 GAME = SITE.parent / "conquer" / "Assets" / "_Project"
 OUT = SITE / "assets" / "presskit.zip"
-WORK = SITE / "tools" / "_presskit"
 
-FACTS = """Clicker, Clicks Something
+FACTS = """Smash & Settle
 by Bad Rock Studio (Istanbul)
 
 Release: November 2026, on Steam
@@ -19,7 +17,7 @@ Platform: Windows PC (Steam)
 Interface languages: English, German, French, Spanish, Brazilian Portuguese, Russian,
 Turkish, Japanese, Korean, Simplified Chinese, Thai
 Contact: contact@badrockstudios.com
-Steam: https://store.steampowered.com/app/5304720/Clicker_Clicks_Something/
+Steam: https://store.steampowered.com/app/5304720/
 Website: https://badrockstudios.com
 Steam group: https://steamcommunity.com/groups/badrockstudio
 
@@ -50,34 +48,25 @@ Features
 - Skills that add new behaviours, not just bigger numbers
 - Puzzles, blessing shrines and villagers who want their lost things back
 
-Pixel art: scale screenshots and the logo by whole numbers with nearest-neighbour
-filtering only, so the pixels stay sharp.
+Pixel art: scale screenshots by whole numbers with nearest-neighbour filtering only,
+so the pixels stay sharp.
 """
 
 
-# The approved logo (2026-10-08, N1) with its shadow, as the game's title screen draws it, and
-# the Steam pictures made from the capsule art with the game's pointer pressing the name.
-LOGO = GAME / "Art" / "Sprites" / "Used" / "Sheets" / "Title" / "title_logo.png"
+# The Smash & Settle logo (2026-10-19, the rename), as Steam's library shows it, and the Steam
+# pictures made from the capsule art.
 CAPSULES = GAME.parent.parent / "Steam" / "Capsules"
 CAPSULE_FILES = ["main_capsule_1232x706.png", "header_capsule_920x430.png",
                  "library_hero_3840x1240.png"]
 
 
 def main():
-    WORK.mkdir(parents=True, exist_ok=True)
-    for old in WORK.glob("*.png"):
-        old.unlink()
-    logo = Image.open(LOGO).convert("RGBA")
-    logo_big = logo.resize((logo.width * 8, logo.height * 8), Image.NEAREST)
-    logo_big.save(WORK / "logo_8x_transparent.png")
-    with_pointer = next(CAPSULES.glob("library_logo_*.png"))
+    logo = next(CAPSULES.glob("library_logo_*.png"))
 
-    root = "Clicker Clicks Something - press kit"
+    root = "Smash and Settle - press kit"
     with zipfile.ZipFile(OUT, "w", zipfile.ZIP_DEFLATED) as z:
         z.writestr(f"{root}/fact_sheet.txt", FACTS)
-        z.write(WORK / "logo_8x_transparent.png", f"{root}/logo/logo_8x_transparent.png")
-        z.write(LOGO, f"{root}/logo/logo_1x_transparent.png")
-        z.write(with_pointer, f"{root}/logo/logo_with_pointer_transparent.png")
+        z.write(logo, f"{root}/logo/logo_transparent.png")
         z.write(GAME / "Art" / "Icons" / "App" / "app_icon_1024.png", f"{root}/logo/app_icon_1024.png")
         for name in CAPSULE_FILES:
             z.write(CAPSULES / name, f"{root}/key_art/{name}")

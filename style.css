@@ -159,40 +159,16 @@ a { color: inherit; }
 .logo-wrap {
   --lp: 5px;
   width: calc(123 * var(--lp));
-  margin: 0 auto calc(13 * var(--lp) + 8px);
+  margin: 0 auto 16px;
 }
 .logo-wrap img {
-  width: calc(123 * var(--lp)); max-width: none;
-  image-rendering: pixelated;
+  width: calc(123 * var(--lp)); max-width: none; height: auto;
 }
-.logo, .presser { animation: bob 2.4s step-end infinite, knock 1.7s step-end infinite; }
-.presser { position: absolute; left: 0; top: 0; width: 100%; }
-.presser img { position: absolute; left: 0; top: 0; }
-.title-hand { animation: tap 1.7s step-end infinite; }
-.title-click { opacity: 0; animation: strokes 1.7s step-end infinite; }
+.logo { animation: bob 2.4s step-end infinite; }
 @keyframes bob {
   0%, 100% { transform: translateY(0); }
   25%, 75% { transform: translateY(calc(-1 * var(--lp))); }
   50% { transform: translateY(calc(-2 * var(--lp))); }
-}
-/* down in 0.08 s, held 0.12 s, back up in 0.25 s, from one art pixel right and two below */
-@keyframes tap {
-  0%, 21%, 100% { transform: translate(var(--lp), calc(2 * var(--lp))); }
-  2.4% { transform: translate(var(--lp), var(--lp)); }
-  4.7%, 11.8% { transform: translate(0, 0); }
-  14% { transform: translate(0, var(--lp)); }
-  17% { transform: translate(var(--lp), var(--lp)); }
-}
-@keyframes strokes {
-  0%, 17.6%, 100% { opacity: 0; }
-  4.7% { opacity: 1; }
-  9% { opacity: .66; }
-  13% { opacity: .33; }
-}
-/* the press knocks the name up one art pixel */
-@keyframes knock {
-  0%, 9%, 100% { translate: 0 0; }
-  4.7% { translate: 0 calc(-1 * var(--lp)); }
 }
 .tagline {
   max-width: 640px; margin: 0 auto 32px;
@@ -681,7 +657,7 @@ html.shop-open { overflow: hidden; }
   .shots { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .logo, .presser, .title-hand, .title-click, .btn-gold, .hint, .hero::before,
+  .logo, .btn-gold, .hint, .hero::before,
   .buy.affordable, .purse.can-buy .shop-tag, .pv-rainbow b, .new-badge, .new-dot, .card .new { animation: none; }
   html { scroll-behavior: auto; }
 }
