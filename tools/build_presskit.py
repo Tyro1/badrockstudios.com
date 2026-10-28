@@ -12,7 +12,7 @@ OUT = SITE / "assets" / "presskit.zip"
 FACTS = """Smash & Settle
 by Bad Rock Studio (Istanbul)
 
-Release: November 2026, on Steam
+Release: coming soon, on Steam
 Platform: Windows PC (Steam)
 Interface languages: English, German, French, Spanish, Brazilian Portuguese, Russian,
 Turkish, Japanese, Korean, Simplified Chinese, Thai
