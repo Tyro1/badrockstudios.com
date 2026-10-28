@@ -37,10 +37,10 @@ their own, and every island you own keeps running while you're away on another.
 Buy the next island
 Every island brings new resources, new tools to forge and new trouble.
 
-Clear the nests
-Nobody knows what lives in the nests. Only that the creatures keep coming, and the purple
-keeps spreading, one island at a time. Gather your soldiers, pull the lever and tear the
-nest out at the root.
+Clear the dungeons
+Nobody knows what lives in the dungeons. Only that the creatures keep coming, and the purple
+keeps spreading, one island at a time. Gather your soldiers, pull the lever and break the
+heart at the bottom of the dungeon.
 
 Features
 - Active when you want, idle when you don't

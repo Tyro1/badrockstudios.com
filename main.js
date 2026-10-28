@@ -1553,7 +1553,7 @@ const SHOP = [
   { id: 'sheep', kind: 'pet', name: 'Sheep', price: 15, note: 'Fluffy, slow and very sure of itself.' },
   { id: 'miner', kind: 'pet', name: 'Miner', price: 25, note: 'Off duty. Still wearing the helmet.' },
   { id: 'lumberjack', kind: 'pet', name: 'Lumberjack', price: 25, note: 'Looking for a tree that is not on a website.' },
-  { id: 'slime', kind: 'pet', name: 'Slime', price: 35, note: 'From the nests. This one is friendly. Probably.' },
+  { id: 'slime', kind: 'pet', name: 'Slime', price: 35, note: 'From the dungeons. This one is friendly. Probably.' },
 
   { id: 'night', kind: 'lagoon', name: 'Night Swim', price: 0, note: 'The lagoon after dark, glittering.' },
   { id: 'day', kind: 'lagoon', name: 'Blue Lagoon', price: 10, note: 'Clear daytime water, a few gulls.' },
