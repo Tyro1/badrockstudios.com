@@ -22,9 +22,9 @@ Website: https://badrockstudios.com
 Steam group: https://steamcommunity.com/groups/badrockstudio
 
 Short description
-An idle clicker about one very busy cursor. Click trees and rocks, build huts, hand every
-chore to your hungry villagers, buy and explore island after island and help the locals,
-while monsters and their creeping corruption try to take it all back.
+A cozy idle game about smashing and settling. Break open trees, rocks and ore, build huts
+and kitchens, give every villager a job and let your islands run themselves. When the purple
+corruption creeps in, gather your soldiers and clear its dungeon.
 
 Click everything
 Trees, rocks, ore veins, giant chests that fall from the sky. Hit them yourself and sweep
